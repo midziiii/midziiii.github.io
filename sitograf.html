@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sitograf – Štamparija & Firmopisac, Bečej</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1a4f8a;
+    --blue-mid: #2563a8;
+    --blue-light: #dce8f5;
+    --blue-pale: #f0f5fb;
+    --ink: #0d2d52;
+    --gray: #6b7a8d;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 48px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--blue-light);
+    transition: box-shadow 0.3s;
+  }
+
+  nav.scrolled { box-shadow: 0 2px 20px rgba(26,79,138,0.10); }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--blue-mid); font-weight: 400; }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--blue); }
+
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: var(--blue);
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 4px;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--ink) !important; color: white !important; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 120px 24px 80px;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(37,99,168,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(26,79,138,0.06) 0%, transparent 50%),
+      var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: repeating-linear-gradient(
+      0deg,
+      var(--blue),
+      var(--blue) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue-mid);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 700;
+    line-height: 1.0;
+    color: var(--ink);
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-title .script {
+    color: var(--blue-mid);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--gray);
+    font-style: italic;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-desc {
+    max-width: 520px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--gray);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: white;
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--ink); transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--blue);
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 2px solid var(--blue-light);
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .btn-outline:hover { border-color: var(--blue); transform: translateY(-2px); }
+
+  .hero-info {
+    margin-top: 80px;
+    font-size: 13px;
+    color: var(--gray);
+    opacity: 0;
+    animation: fadeUp 0.8s 1.2s forwards;
+  }
+
+  .hero-info strong { color: var(--blue); }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 200px;
+    margin: 0 auto 48px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--blue-light);
+  }
+
+  .divider-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue-mid);
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 96px 24px;
+  }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blue-mid);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .section-lead {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--gray);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 64px;
+  }
+
+  /* SERVICES */
+  #usluge { background: var(--blue-pale); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .service-card {
+    background: white;
+    border: 1px solid var(--blue-light);
+    border-radius: 8px;
+    padding: 36px 28px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue-mid);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26,79,138,0.12); }
+
+  .service-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .service-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .service-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--gray);
+  }
+
+  .service-items {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: var(--blue-pale);
+    color: var(--blue);
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+
+  /* ABOUT */
+  #onama {
+    background: white;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-box {
+    background: var(--blue);
+    border-radius: 8px;
+    padding: 56px 48px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-box::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    right: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 200px;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+  }
+
+  .about-box p {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    line-height: 1.6;
+    font-style: italic;
+    color: rgba(255,255,255,0.92);
+  }
+
+  .about-box .cite {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-top: 24px;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .stat-box {
+    background: var(--blue-pale);
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--blue);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  .about-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .about-text p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--gray);
+    margin-bottom: 16px;
+  }
+
+  .about-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .badge {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: white;
+    color: var(--blue);
+    border: 1.5px solid var(--blue-light);
+    padding: 6px 14px;
+    border-radius: 4px;
+  }
+
+  /* CONTACT */
+  #kontakt {
+    background: var(--ink);
+    color: white;
+  }
+
+  #kontakt .section-eyebrow { color: rgba(255,255,255,0.5); }
+  #kontakt .section-title { color: white; }
+  #kontakt .section-lead { color: rgba(255,255,255,0.6); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .contact-row {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  .contact-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 4px;
+  }
+
+  .contact-value {
+    font-size: 17px;
+    color: white;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .contact-value a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .contact-value a:hover { text-decoration: underline; }
+
+  /* FORM */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .form-group input,
+  .form-group textarea {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: 'Lato', sans-serif;
+    color: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
+
+  .form-group input:focus,
+  .form-group textarea:focus { border-color: rgba(255,255,255,0.4); }
+
+  .form-group textarea { resize: vertical; min-height: 120px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .btn-send {
+    background: white;
+    color: var(--ink);
+    padding: 14px 28px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .btn-send:hover { opacity: 0.88; transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    background: #071828;
+    color: rgba(255,255,255,0.35);
+    text-align: center;
+    padding: 28px 24px;
+    font-size: 13px;
+  }
+
+  footer strong { color: rgba(255,255,255,0.6); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+    section { padding: 72px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">Sito<span>graf</span></a>
+  <ul class="nav-links">
+    <li><a href="#usluge">Usluge</a></li>
+    <li><a href="#onama">O nama</a></li>
+    <li><a href="#kontakt" class="nav-cta">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-lines"></div>
+  <div class="hero-eyebrow">Štamparija &amp; Firmopisac — Bečej</div>
+  <h1 class="hero-title">Sito<span class="script">graf</span></h1>
+  <p class="hero-sub">Štampamo vaše ideje</p>
+  <p class="hero-desc">
+    Više decenija iskustva u sito štampi, ofset štampi, digitalnoj štampi,
+    firmopisačkim uslugama i laserskom graviranju. Sve na jednom mestu, u srcu Bečeja.
+  </p>
+  <div class="hero-btns">
+    <a href="#usluge" class="btn-primary">Naše usluge</a>
+    <a href="#kontakt" class="btn-outline">Kontaktirajte nas</a>
+  </div>
+  <p class="hero-info">
+    <strong>Zelena 116, Bečej</strong> &nbsp;·&nbsp; tel. 021/691-97-16 &nbsp;·&nbsp; 064/168-59-29
+  </p>
+</section>
+
+<!-- USLUGE -->
+<section id="usluge">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">Šta radimo</p>
+    <h2 class="section-title reveal">Naše usluge</h2>
+    <p class="section-lead reveal">Od vizit karata do velikih bannera — nudimo kompletnu štampu i izradu natpisa za firme i privatne klijente.</p>
+
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <span class="service-icon">🖨️</span>
+        <div class="service-name">Digitalna štampa</div>
+        <p class="service-desc">Brza i precizna štampa malih i srednjih tiraža uz visoku kvalitetu boje i detalja.</p>
+        <div class="service-items">
+          <span class="tag">Vizit karte</span>
+          <span class="tag">Flajeri</span>
+          <span class="tag">Posteri</span>
+          <span class="tag">Brošure</span>
+          <span class="tag">Memorandumi</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-icon">📋</span>
+        <div class="service-name">Ofset štampa</div>
+        <p class="service-desc">Idealna za velike tiraže — vrhunski kvalitet po pristupačnoj ceni za kataloge, knjige i pakovanje.</p>
+        <div class="service-items">
+          <span class="tag">Katalozi</span>
+          <span class="tag">Blokovi</span>
+          <span class="tag">Knjige</span>
+          <span class="tag">Pakovanje</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-icon">🎨</span>
+        <div class="service-name">Sito štampa</div>
+        <p class="service-desc">Klasična tehnika koja daje bogatu, trajnu boju — idealna za tekstil, papir i različite materijale.</p>
+        <div class="service-items">
+          <span class="tag">Majice</span>
+          <span class="tag">Kese</span>
+          <span class="tag">Etikete</span>
+          <span class="tag">Promotivni materijal</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-icon">🏪</span>
+        <div class="service-name">Firmopisačke usluge</div>
+        <p class="service-desc">Izrada svih vrsta natpisa, tabla i oznaka za firme, objekte i javne površine.</p>
+        <div class="service-items">
+          <span class="tag">Table za firme</span>
+          <span class="tag">Natpisi</span>
+          <span class="tag">Oznake</span>
+          <span class="tag">Fasadna slova</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-icon">✨</span>
+        <div class="service-name">Lasersko graviranje</div>
+        <p class="service-desc">Precizna obrada različitih materijala laserom — trajni natpisi i personalizovani pokloni.</p>
+        <div class="service-items">
+          <span class="tag">Drvo</span>
+          <span class="tag">Akril</span>
+          <span class="tag">Metal</span>
+          <span class="tag">Pečati</span>
+          <span class="tag">Pokloni</span>
+        </div>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-icon">🖼️</span>
+        <div class="service-name">Veliki format</div>
+        <p class="service-desc">Štampa bannera, rollup postolja i fasadnih platna za potpunu vidljivost vašeg brenda.</p>
+        <div class="service-items">
+          <span class="tag">Banneri</span>
+          <span class="tag">Rollup</span>
+          <span class="tag">Platna</span>
+          <span class="tag">Prozorske folije</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- O NAMA -->
+<section id="onama">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-box">
+          <p>Kvalitet koji traje — od prve vizit karte do poslednjeg bannera, svaki posao radimo sa pažnjom i iskustvom.</p>
+          <div class="cite">Sitograf, Bečej</div>
+        </div>
+        <div class="about-stats">
+          <div class="stat-box">
+            <span class="stat-number">30+</span>
+            <div class="stat-label">Godina iskustva</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">5</span>
+            <div class="stat-label">Tehnika štampe</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">100%</span>
+            <div class="stat-label">Lokalna firma</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number">∞</span>
+            <div class="stat-label">Zadovoljnih klijenata</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-text reveal">
+        <h3>Štamparija sa tradicijom u Bečeju</h3>
+        <p>
+          Sitograf je štamparija i firmopisačka radionica sa dugogodišnjim iskustvom u izradi svih vrsta
+          štampanog i gravirovanog materijala za firme i privatne klijente širom Vojvodine.
+        </p>
+        <p>
+          Nalazimo se u Bečeju na adresi Zelena 116 i dostupni smo za sve vaše potrebe —
+          od jednostavnih vizit karata do kompleksnih signalizacionih sistema za firme.
+        </p>
+        <p>
+          Kombinujemo klasične tehnike poput sito štampe sa modernom digitalnom opremom,
+          kako bismo uvek pružili pravo rešenje za vaš projekat i budžet.
+        </p>
+        <div class="about-badges">
+          <span class="badge">Lokalna firma</span>
+          <span class="badge">Brzi rokovi</span>
+          <span class="badge">Individualni pristup</span>
+          <span class="badge">Povoljne cene</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt">
+  <div class="section-inner">
+    <p class="section-eyebrow reveal">Stupite u kontakt</p>
+    <h2 class="section-title reveal">Kako do nas</h2>
+    <p class="section-lead reveal">Pošaljite upit ili nas pozovite — odgovaramo brzo i rado pomažemo oko svakog projekta.</p>
+
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="contact-row">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Adresa</div>
+            <div class="contact-value">Zelena 116, Bečej<br>Vojvodina, Srbija</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-label">Telefon</div>
+            <div class="contact-value">
+              <a href="tel:+38121691197316">021 / 691-97-16</a><br>
+              <a href="tel:+38164168159129">064 / 168-59-29</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <div class="contact-label">Radno vreme</div>
+            <div class="contact-value">Pon – Pet: 08:00 – 16:00<br>Subota: po dogovoru</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form reveal">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ime i prezime</label>
+            <input type="text" placeholder="Vaše ime">
+          </div>
+          <div class="form-group">
+            <label>Telefon / Email</label>
+            <input type="text" placeholder="Kontakt podatak">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Koja usluga vas zanima?</label>
+          <input type="text" placeholder="npr. Vizit karte, banner, sito štampa...">
+        </div>
+        <div class="form-group">
+          <label>Poruka</label>
+          <textarea placeholder="Opišite ukratko šta vam treba — format, količina, rok..."></textarea>
+        </div>
+        <button class="btn-send" onclick="alert('Hvala! U produkciji ovo bi slalo email. Slobodno nas pozovite direktno.')">Pošalji upit →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 <strong>Sitograf</strong> — Štamparija &amp; Firmopisac, Bečej · Zelena 116 · 021/691-97-16
+</footer>
+
+<script>
+  // Nav scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
